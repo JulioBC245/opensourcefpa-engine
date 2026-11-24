@@ -1,0 +1,184 @@
+{
+  "config_version": "1.0.0",
+  "engine_min_version": "0.1.0",
+  "created_at": "2026-09-18T00:00:00Z",
+  "language": "fr",
+  "company": {
+    "name": "Exemple SAS",
+    "fiscal_year_end_month": 12,
+    "currency": "EUR",
+    "industry_tag": "services",
+    "entity_scope": "one_company_total"
+  },
+  "paths": {
+    "working_root_hint": ".",
+    "pnl_actuals": "data/fixtures/input/pnl.csv",
+    "opening_bs": "data/fixtures/input/bs-opening.csv",
+    "budget": "data/fixtures/input/budget.csv",
+    "assumptions": "data/fixtures/input/parametres.csv",
+    "decisions": "data/fixtures/input/investissements-emprunts.csv",
+    "ops_other": "data/fixtures/input/volumes.csv"
+  },
+  "sources": [
+    {
+      "source_id": "src-pnl",
+      "source_name": "Compte de resultat",
+      "system": "ledger",
+      "grain": "month",
+      "history_months": 24,
+      "availability_lag_days": 20,
+      "refresh_cadence": "mensuel",
+      "snapshot_or_history": "history",
+      "owner": "DAF",
+      "state": "schema_mapped",
+      "file_role": "pnl_actuals",
+      "headers_declared": [
+        "libelle",
+        "periode",
+        "montant"
+      ],
+      "incoming_kind": "ledger",
+      "file_layout": "long",
+      "column_map": {
+        "libelle": "libelle",
+        "periode": "periode",
+        "montant": "montant"
+      },
+      "column_period": {},
+      "exercice_n": 2025,
+      "periods": []
+    },
+    {
+      "source_id": "src-bs",
+      "source_name": "Bilan d'ouverture",
+      "system": "ledger",
+      "grain": "month",
+      "history_months": 1,
+      "availability_lag_days": 20,
+      "refresh_cadence": "annuel",
+      "snapshot_or_history": "snapshot",
+      "owner": "DAF",
+      "state": "schema_mapped",
+      "file_role": "opening_bs",
+      "headers_declared": [
+        "libelle",
+        "montant"
+      ],
+      "incoming_kind": "ledger",
+      "file_layout": "long",
+      "column_map": {
+        "libelle": "libelle",
+        "montant": "montant"
+      },
+      "column_period": {},
+      "exercice_n": 2023,
+      "periods": []
+    },
+    {
+      "source_id": "src-budget",
+      "source_name": "Budget",
+      "system": "ledger",
+      "grain": "month",
+      "history_months": 24,
+      "availability_lag_days": 0,
+      "refresh_cadence": "annuel",
+      "snapshot_or_history": "history",
+      "owner": "DAF",
+      "state": "schema_mapped",
+      "file_role": "budget",
+      "headers_declared": [
+        "libelle",
+        "periode",
+        "montant"
+      ],
+      "incoming_kind": "ledger",
+      "file_layout": "long",
+      "column_map": {
+        "libelle": "libelle",
+        "periode": "periode",
+        "montant": "montant"
+      },
+      "column_period": {},
+      "exercice_n": 2025,
+      "periods": []
+    }
+  ],
+  "line_map": {
+    "Chiffre d'affaires": "REV",
+    "Achats": "COGS",
+    "Salaires": "PAYROLL",
+    "Charges externes": "OPEX_OTHER",
+    "Amortissements": "D_A",
+    "Charges financieres": "FIN",
+    "Impot sur les societes": "TAX"
+  },
+  "line_map_bs": {
+    "Tresorerie": "CASH",
+    "Clients": "AR",
+    "Stocks": "INV",
+    "Immobilisations nettes": "PPE",
+    "Autres actifs courants": "OTHER_CA",
+    "Fournisseurs": "AP",
+    "Dettes CT": "ST_DEBT",
+    "Dettes LT": "LT_DEBT",
+    "Autres passifs courants": "OTHER_CL",
+    "Capitaux propres": "EQUITY"
+  },
+  "line_bindings": [],
+  "mechanisms": {
+    "qty_x_price": false,
+    "customers_x_spend": false,
+    "capacity_x_util_x_rate": false,
+    "revenue_growth_pct": false,
+    "variable_cost_pct_or_unit": false,
+    "headcount_x_cost": false,
+    "fixed_monthly_expense": true,
+    "dso_dpo_dio": true,
+    "capex_schedule": true,
+    "debt_schedule": true,
+    "effective_tax_rate": true
+  },
+  "assumption_keys": [
+    {
+      "id": "taux.impot",
+      "enabled": true,
+      "origin": "catalog",
+      "engine": "wired",
+      "meaning": "IS effectif"
+    },
+    {
+      "id": "dso",
+      "enabled": true,
+      "origin": "catalog",
+      "engine": "wired",
+      "meaning": "Jours clients"
+    },
+    {
+      "id": "dpo",
+      "enabled": true,
+      "origin": "catalog",
+      "engine": "wired",
+      "meaning": "Jours fournisseurs"
+    },
+    {
+      "id": "dio",
+      "enabled": true,
+      "origin": "catalog",
+      "engine": "wired",
+      "meaning": "Jours de stock"
+    },
+    {
+      "id": "charge.fixe.loyer",
+      "enabled": true,
+      "origin": "catalog",
+      "engine": "wired",
+      "meaning": "Loyer"
+    }
+  ],
+  "file_schemas": [],
+  "labels": [
+    "imported_actual",
+    "mechanical_rule",
+    "management_assumption"
+  ]
+}

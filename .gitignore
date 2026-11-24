@@ -1,0 +1,14 @@
+# Local outputs and customer data never go in the repository
+work/
+reports/
+input/*
+!input/modeles/
+input/modeles/*
+!input/modeles/LISEZMOI.txt
+*.env
+.env*
+.Rhistory
+.RData
+.Rproj.user/
+__pycache__/
+*conflicted copy*

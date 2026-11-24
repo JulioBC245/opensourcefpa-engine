@@ -1,0 +1,53 @@
+{
+  "config_version": "1.0.0",
+  "engine_min_version": "0.1.0",
+  "note": "Example only. Prefer data/fixtures/config/fpa-config.json for a runnable sample. R joins on period_end, never on the label N. Parameter ids use dots (taux.impot).",
+  "company": {
+    "name": "Exemple SAS",
+    "fiscal_year_end_month": 12,
+    "currency": "EUR",
+    "industry_tag": "services",
+    "entity_scope": "one_company_total"
+  },
+  "paths": {
+    "working_root_hint": "C:\\FPA-Local",
+    "pnl_actuals": "C:\\FPA-Local\\input\\pnl.csv",
+    "opening_bs": "C:\\FPA-Local\\input\\bs-opening.csv",
+    "budget": "C:\\FPA-Local\\input\\budget.csv",
+    "assumptions": "C:\\FPA-Local\\input\\parametres.csv",
+    "decisions": "C:\\FPA-Local\\input\\investissements-emprunts.csv"
+  },
+  "driver_bindings": [
+    {
+      "series_id": "src-example__cout_moyen",
+      "target_line": "PAYROLL",
+      "relation": "",
+      "prior": 0.70,
+      "lag_window_max": 3,
+      "low_factor": 0.9,
+      "high_factor": 1.1,
+      "reason": "Le cout moyen deplace la masse salariale. relation vide: une identite detectee devient un mecanisme au prior non reduit."
+    }
+  ],
+  "mechanisms": {
+    "dso_dpo_dio": true,
+    "effective_tax_rate": true,
+    "fixed_monthly_expense": true,
+    "capex_schedule": true,
+    "debt_schedule": true
+  },
+  "assumption_keys": [
+    { "id": "taux.impot", "enabled": true, "origin": "catalog", "engine": "wired", "meaning": "IS effectif", "label": "Taux d'impôt", "lever": "points", "min": -5, "max": 5, "step": 1 },
+    { "id": "dso", "enabled": true, "origin": "catalog", "engine": "wired", "meaning": "Jours clients", "label": "Encaissement clients", "lever": "days", "min": -21, "max": 21, "step": 7 },
+    { "id": "dpo", "enabled": true, "origin": "catalog", "engine": "wired", "meaning": "Jours fournisseurs", "label": "Paiement fournisseurs", "lever": "days", "min": -21, "max": 21, "step": 7 },
+    { "id": "dio", "enabled": true, "origin": "catalog", "engine": "wired", "meaning": "Jours de stock", "label": "Rotation des stocks", "lever": "days", "min": -21, "max": 21, "step": 7 },
+    { "id": "charge.fixe.loyer", "enabled": true, "origin": "catalog", "engine": "wired", "meaning": "Loyer", "label": "Loyer", "lever": "percent", "min": -30, "max": 30, "step": 5 }
+  ],
+  "scenario_lines": [
+    { "id": "REV", "min": -20, "max": 20, "step": 5 },
+    { "id": "COGS", "min": -20, "max": 20, "step": 5 },
+    { "id": "PAYROLL", "min": -20, "max": 20, "step": 5 },
+    { "id": "OPEX_OTHER", "min": -20, "max": 20, "step": 5 }
+  ],
+  "labels": ["imported_actual", "mechanical_rule", "management_assumption"]
+}

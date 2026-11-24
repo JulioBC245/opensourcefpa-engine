@@ -1,0 +1,6 @@
+Modeles CSV generes par le moteur a partir de fpa-config.json.
+En-tetes imposes: ne les renommez pas.
+Les chiffres sont fictifs. Remplacez-les par les votres,
+puis enregistrez le fichier au chemin indique dans fpa-config.json.
+
+Aucun programme n'a ete telecharge depuis le site.

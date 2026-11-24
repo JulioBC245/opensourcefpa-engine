@@ -1,0 +1,13 @@
+# Moteur FPA local. Fichier unique, texte lisible.
+# Ouvrez ce fichier dans le Bloc-notes. Ce n'est pas un binaire.
+#
+# 1. Installez R depuis https://cran.r-project.org/bin/windows/base/
+# 2. Une fois, dans R :
+#      install.packages(c("jsonlite", "shiny", "bslib", "plotly", "readxl", "openxlsx"))
+#    jsonlite lit les reglages. shiny et bslib affichent l'ecran.
+#    plotly trace les graphiques. readxl lit un classeur Excel.
+#    openxlsx ecrit dans un classeur quand un chemin des reglages est un fichier Excel.
+# 3. Placez ce fichier a cote de fpa-config.json.
+# 4. Dans RStudio : Source. Ou : Rscript fpa-engine.R
+#
+# Les blocs ci-dessous sont le moteur, dans l'ordre de chargement.
