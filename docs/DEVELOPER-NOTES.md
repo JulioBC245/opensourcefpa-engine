@@ -1,83 +1,73 @@
-# fpa-local
+# Developer notes
 
-Sibling product codebase for the local-first self-service FP&A application.
-
-- **This folder** is the commercial product tree (M1).
-- **Do not** treat `../driver-based-fp&a-ecosystem` as the product. That project stays the XYZ Sugar Co. LinkedIn / Netlify showcase.
-
-## Spec
-
-Governing build contract (Obsidian):
-
-`FinanceAI/FPnA Master Folder/SaaS Idea Assessment/M1 Build Specification - Local-First Self-Service FPA.md`
-
-Shared chat handoff (Engine builder ↔ Web builder): `../docs/HANDOFF-Engine-Web-Builders.md`
-
-Locked from the interactive review on 2026-09-17.
+How the OpenSourceFPA engine is laid out, built and tested.
 
 ## Layout
 
 | Path | Role |
 |---|---|
-| `R/` | Engine modules (patterns from sugar, maths written fresh) |
-| `data/fixtures/` | Fictional Exemple SAS inputs + config |
-| `config/` | Schema examples |
-| `tests/` | Gates 1–9, horizon, variance, freeze, and the driver pass |
-| `work/` · `reports/` | Local outputs from `fpa_run()` |
-| `app.R` | Local screen: statements, variance, drivers. `fpa_app()` opens it |
+| `R/` | Engine modules (config, validation, P&L, working capital, cash, balance sheet, drivers, scenarios, variance, reports, screen entry) |
+| `app.R` | Local Shiny screen: statements, variance, scenarios, drivers |
+| `fpa-engine.R` | Entry point. With no argument it looks for `fpa-config.json` beside itself, then in `config/`, then in `data/fixtures/config/` |
+| `engine-modules.txt` | Ordered list of modules that make up the engine |
+| `tools/assemble-engine.R` | Builds a single readable `fpa-engine.R` from the modules in that list |
+| `config/` | Example configuration (`fpa-config.example.json`) |
+| `data/fixtures/` | Fictional company "Exemple SAS" used by the tests |
+| `tests/` | Test suite, including acceptance gates 1–9 |
+| `input/modeles/` | Model CSV templates and `LISEZMOI.txt` written on first run |
+| `work/` · `reports/` | Local outputs from `fpa_run()` (gitignored; never commit customer data) |
 
-## How this reaches a customer
+## Assemble the single-file engine
 
-No archive, no installer, no executable from the website.
+From the repository root, pass the output path:
 
-1. The customer installs R themselves from the official source, `cran.r-project.org/bin/windows/base/`.
-2. The engine is readable R source: their IT can read every line before approving it.
-3. The website hands over **two text files**: `fpa-config.json` (settings, line mappings, model tables) and `fpa-engine.R` (the engine, assembled as one readable source file). Neither is a compiled executable.
-4. `fpa_init()` creates `input/`, `input/modeles/`, `work/`, `reports/` and writes the model CSVs from that JSON. This replaces everything the old downloadable zip used to carry.
-
-**Open decision (2026-09-18):** where the engine is hosted is deferred. Local testing only for now. Until a public repository exists, the wizard must not claim one — the Revue panel talks about R and about source readability, nothing more.
-
-`START.bat` and the zip builder were removed on 2026-09-18: a `.bat` inside a downloaded archive is the exact shape antivirus, SmartScreen, and SME IT gateways flag, and nothing needed it.
-
-The subscriber runs **one file**, `fpa-engine.R`. It is readable text, not a binary. The name is deliberate: `run.R` reads like a command to a stranger, and a file called `run` in a download folder is exactly what a cautious buyer refuses to open.
-
-```powershell
-Rscript fpa-engine.R "C:\FPA-Local\fpa-config.json"
+```
+Rscript tools/assemble-engine.R path/to/fpa-engine.R
 ```
 
-Or, in RStudio: open `fpa-engine.R` and press Source. With no argument it looks for `fpa-config.json` beside itself, then in `config/`, then in `data/fixtures/config/`.
+The assembler concatenates every module named in `engine-modules.txt`, in that order, into one readable source file. A name in the list that is missing from `R/` stops the build.
 
-### Folder structure on the customer's machine
+## Fixtures and tests
 
-The wizard creates nothing on disk. The engine does, on first run, from `paths.working_root_hint` in the JSON (the "Dossier de travail" field on step 6). `dir.create(recursive = TRUE)` means the root itself is created when it does not exist, so the customer never makes a folder by hand.
+`data/fixtures/` holds a fictional 24-month company, Exemple SAS. Generate or refresh it with `Rscript data/fixtures/build-fixtures.R` from the repository root.
+
+Run the suite from the repository root:
+
+```
+Rscript tests/run-all.R
+```
+
+`tests/test-init.R` also asserts that `fpa_init()` produces no `.bat`, `.exe`, `.cmd`, `.ps1`, `.vbs` or `.msi` anywhere under the working root.
+
+## Run the engine and the screen
+
+The product ships as readable R source, not as an archive, installer or executable. The configuration assistant at opensourcefpa.com hands over two text files: `fpa-config.json` (settings, line mappings, model tables) and `fpa-engine.R` (the assembled engine). Place `app.R` beside them.
+
+```
+Rscript fpa-engine.R "C:/FPA-Local/fpa-config.json"
+```
+
+Or, in RStudio, open `fpa-engine.R` and press Source. The engine needs `jsonlite`. It needs `readxl` to read an Excel workbook, and `openxlsx` to write into one. The screen needs `shiny` and `bslib`. The screen also uses `plotly` when it is installed; without it, the same charts stay in base R.
+
+On first run, `fpa_init()` creates the working folders from `paths.working_root_hint` in the JSON (and creates that root if it does not exist):
 
 ```
 C:\FPA-Local\                 <- working_root_hint
-  input\                      <- the customer saves their own files here
-    modeles\                  <- model CSVs written from file_drafts, + LISEZMOI.txt
+  input\                      <- the user saves their own files here
+    modeles\                  <- model CSVs written from the configuration, plus LISEZMOI.txt
   work\                       <- pnl-monthly.csv, bs-monthly.csv, cash-bridge-monthly.csv
   reports\                    <- findings.csv
 ```
 
-Run once with no data and the engine creates the structure, names the three files it expects, points at `input\modeles\`, and exits with status 0 (no R error trace). Fill `input\`, run again, and it computes.
+`work/`, `reports/` and `exports/` follow `working_root_hint`, not the folder that holds `fpa-engine.R`. `fpa_init()` never overwrites a file the user has already edited unless `overwrite = TRUE`.
 
-`work/`, `reports/`, and `exports/` follow `working_root_hint`, **not** the folder holding `fpa-engine.R` (fixed 2026-09-18: a subscriber who left the engine in `Downloads` got results in `Downloads\work` while empty folders sat in `C:\FPA-Local`). Existing files are never overwritten by `fpa_init()`.
-
-`fpa-engine.R` sources the engine, calls `fpa_init()` then `fpa_run()`, and prints a plain-French summary (periods, revenue, net income, closing cash, whether the balance sheet balanced, anything to check, files written). It needs `jsonlite`. It needs `readxl` to read an Excel workbook, and `openxlsx` to write into one. The screen needs `shiny` and `bslib`.
-
-Open the screen from the R session that already has the engine loaded, with no batch file:
+Open the screen from an R session that already has the engine loaded:
 
 ```r
 fpa_app("C:/FPA-Local/fpa-config.json")
 ```
 
-`app.R` must sit beside that config, or beside the engine. The product does not ship a `.bat` or an `.exe`. Create a one-time Windows shortcut yourself. Full recipe: `docs/Second-Person-Cycle.md`. Example target:
-
-```text
-"C:\Program Files\R\R-4.6.0\bin\Rscript.exe" -e "Sys.setenv(FPA_CONFIG='C:/FPA-Local/fpa-config.json'); setwd('C:/FPA-Local'); source('fpa-engine.R'); fpa_run('fpa-config.json'); fpa_app('fpa-config.json')"
-```
-
-The screen also uses `plotly` when it is installed. Without it, the same charts stay in base R.
+`app.R` must sit beside that config, or beside the engine. The product does not ship a `.bat` or an `.exe`. A one-time Windows shortcut is optional; the recipe is in `docs/Second-Person-Cycle.md`.
 
 Called directly, the two steps are:
 
@@ -87,33 +77,13 @@ fpa_init("C:/FPA-Local/fpa-config.json")   # folders + model tables
 fpa_run("C:/FPA-Local/fpa-config.json")    # three statements
 ```
 
-`fpa_init()` never overwrites a file the customer has already edited unless `overwrite = TRUE`.
+## What the engine covers
 
-## Run the engine
-
-```powershell
-cd path\to\opensourcefpa-engine
-& "C:\Program Files\R\R-4.6.0\bin\Rscript.exe" -e "source('tests/helpers.R'); fpa_test_bootstrap(); fpa_run(fpa_ensure_fixtures())"
-```
-
-## Run gates 1–9 + init
-
-```powershell
-cd path\to\opensourcefpa-engine
-& "C:\Program Files\R\R-4.6.0\bin\Rscript.exe" tests/run-all.R
-```
-
-`tests/test-init.R` also asserts that `fpa_init()` produces no `.bat`, `.exe`, `.cmd`, `.ps1`, `.vbs`, or `.msi` anywhere under the working root.
-
-## What L1/L2 covers
-
-- Load `fpa-config.json` (website wizard contract)
+- Load `fpa-config.json` (the website assistant contract)
 - `fpa_init()`: create the working folder and model tables from that JSON
-- Read P&L, opening BS, budget, parametres, decisions, volumes
-- Plain-French validation (missing file, month gap, sign flip, BS balance)
-- Monthly P&L through NI, DSO/DPO/DIO WC, indirect cash bridge, rolling BS
-- No plug: cash from the bridge; equity rolls with NI; `A = L + E` asserted
+- Read P&L, opening balance sheet, budget, parameters, decisions and volumes
+- Plain-French validation (missing file, month gap, sign flip, balance-sheet balance)
+- Monthly P&L through net income, DSO/DPO/DIO working capital, an indirect cash bridge, and a rolling balance sheet
+- No plug: cash comes from the bridge; equity rolls with net income; `A = L + E` is asserted
 
-## First engineering rule
-
-No paid / self-service ship until monthly three statements articulate and acceptance gates 1–17 are green. Gates 1–9 are implemented. Horizon, variance, and freeze have their own checks. Gates 10, 12, 13, and 15 are started in `fpa-freeze.R` and are not the full ship bar yet. Sugar cash/BS ideas may bootstrap development only.
+Gates 1–9 are implemented. Horizon, variance and freeze have their own checks. Gates 10, 12, 13 and 15 are started in `fpa-freeze.R` and are not the full ship bar yet. There is no paid or self-service ship until the monthly three statements articulate and acceptance gates 1–17 are green.

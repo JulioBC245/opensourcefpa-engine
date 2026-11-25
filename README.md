@@ -31,8 +31,8 @@ The engine can draft management commentary with an AI provider of your choice, u
 
 Copyright (C) 2026 Julio Bauer Cantuaria.
 
-This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. See [LICENSE](LICENSE).
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version (AGPL-3.0-or-later). See [LICENSE](LICENSE).
 
 ## Contributing
 
-Contributions are welcome. Before your first pull request is merged, you need to accept the [Contributor Licence Agreement](CLA.md). See [CONTRIBUTING.md](CONTRIBUTING.md).
+Issues and bug reports are welcome. Code and documentation contributions will open after the [Contributor Licence Agreement](CLA.md) has been reviewed by a French IP lawyer. See [CONTRIBUTING.md](CONTRIBUTING.md).
