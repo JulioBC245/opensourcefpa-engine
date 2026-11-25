@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (C) 2026 Julio Bauer Cantuaria
 # Rolling path past fiscal year-end: 18 months, seasonal copy, cascade past month 12.
-# Run from fpa-local: Rscript tests/check-rolling-horizon.R
+# Run from the opensourcefpa-engine root: Rscript tests/check-rolling-horizon.R
 
 source("tests/helpers.R", encoding = "UTF-8")
 fpa_test_bootstrap()

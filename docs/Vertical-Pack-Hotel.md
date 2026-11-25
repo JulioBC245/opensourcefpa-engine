@@ -4,7 +4,7 @@ Design only. The wizard still asks for a column mapping. This note is the contra
 
 ## Who it is for
 
-An independent hotel, or a small group, that already exports three files each month: a P&L extract, an occupancy file, and a parameter file. The sample that proved the engine is the 36-month hotel set under `fpa-local-test`.
+An independent hotel, or a small group, that already exports three files each month: a P&L extract, an occupancy file, and a parameter file. The pack was proved against a 36-month hotel dataset, which is not included in this repository.
 
 ## The three files the pack expects
 
@@ -42,5 +42,5 @@ The user still confirms the folder path and which months are closed. The pack do
 
 ## Code
 
-- Contract: `fpa-web/lib/hotelPack.ts`
+- Contract: the hotel pack in the opensourcefpa.com configurator.
 - Wizard: when the sector is hotel, step 3 shows the pack banner and proposes caption maps locally before calling the assistant. Step 4 names the hotel mechanism socle and the volume headers.

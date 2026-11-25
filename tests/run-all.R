@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (C) 2026 Julio Bauer Cantuaria
-# Run gates 1–9. Execute from fpa-local root:
+# Run gates 1–9. Execute from the opensourcefpa-engine root:
 #   "C:\Program Files\R\R-4.6.0\bin\Rscript.exe" tests/run-all.R
 # LAST CHANGE: 2026-09-30 (check-*.R scripts run too, one process each)
 
@@ -18,12 +18,17 @@ gates <- c(
   "test-line-lookup.R", "test-open-num.R",
   "test-variance.R", "test-horizon.R", "test-freeze.R", "test-live-hotel.R"
 )
+options(fpa.catch_skips = TRUE)
 failed <- character(0)
 for (g in gates) {
   message("=== ", g, " ===")
   code <- tryCatch(
     {
       source(file.path(root, "tests", g), encoding = "UTF-8")
+      0L
+    },
+    fpa_skip = function(e) {
+      message("SKIP ", g, ": ", conditionMessage(e))
       0L
     },
     error = function(e) {

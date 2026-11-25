@@ -51,7 +51,7 @@ fpa_load_config <- function(config_path) {
     stop(
       "Ce moteur (version ", FPA_ENGINE_VERSION,
       fpa_txt("loc_config_too_old"), min_v, "). ",
-      "Mettez a jour fpa-local."
+      "Mettez a jour opensourcefpa-engine."
     )
   }
   raw$`.config_path` <- normalizePath(config_path, winslash = "/", mustWork = FALSE)

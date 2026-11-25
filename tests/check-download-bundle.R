@@ -2,10 +2,15 @@
 # Copyright (C) 2026 Julio Bauer Cantuaria
 # Prove the subscriber download works in a folder that has no R/ directory.
 # The assembler writes a temp fpa-engine.R. This script never overwrites
-# fpa-local/fpa-engine.R or fpa-local-test/fpa-engine.R.
+# the repository's fpa-engine.R source or any assembled copy.
 
 root <- "."
-cfg <- "../fpa-local-test/fpa-config.json"
+source(file.path(root, "tests", "helpers.R"), encoding = "UTF-8")
+cfg <- fpa_optional_data_config()
+if (is.null(cfg)) {
+  fpa_notify_skip_optional_data("download-bundle statement run")
+  cfg <- ""
+}
 rscript <- file.path(R.home("bin"), if (.Platform$OS.type == "windows") "Rscript.exe" else "Rscript")
 dest_dir <- tempfile("fpa-download-")
 dir.create(dest_dir, recursive = TRUE)
@@ -64,24 +69,28 @@ if (!isTRUE(ok)) stop("journal write failed")
 got <- fpa_journal_read(paths)
 if (length(got) != 1L || !identical(got[[1]]$title, "probe")) stop("journal read failed")
 cfg <- "%s"
-res <- fpa_run(cfg, write = FALSE, stop_on_error = TRUE)
-if (is.null(res$pnl) || !nrow(res$pnl)) stop("statements did not run")
-if (is.null(res$cash) || !nrow(res$cash)) stop("cash bridge did not run")
-if (is.null(res$bs) || !nrow(res$bs)) stop("balance sheet did not run")
-config <- fpa_load_config(cfg)
-ye <- fpa_year_end_month(config, res$status, as.character(res$pnl$periode))
-cash <- fpa_objectif_read(res, "cash_ye", ye)
-oi <- fpa_objectif_read(res, "oi_ye", ye)
-cat("year-end ", ye, " cash ", round(cash), " oi ", round(oi), "\\n", sep = "")
-if (!is.finite(cash) || !is.finite(oi)) stop("year-end target has no figure")
-per <- as.character(res$pnl$periode[[nrow(res$pnl)]])
-oi_trail <- fpa_oi_cell_read(config, per)
-cash_trail <- fpa_cash_cell_read(config, per)
-bs_trail <- fpa_bs_cell_read(config, per)
-if (!is.list(oi_trail) || !is.list(cash_trail) || !is.list(bs_trail)) stop("calculation trail did not return")
-outlook <- fpa_outlook_read(config)
-if (!is.list(outlook)) stop("four-week outlook did not read")
-cat("download bundle ok\\n")
+if (nzchar(cfg) && file.exists(cfg)) {
+  res <- fpa_run(cfg, write = FALSE, stop_on_error = TRUE)
+  if (is.null(res$pnl) || !nrow(res$pnl)) stop("statements did not run")
+  if (is.null(res$cash) || !nrow(res$cash)) stop("cash bridge did not run")
+  if (is.null(res$bs) || !nrow(res$bs)) stop("balance sheet did not run")
+  config <- fpa_load_config(cfg)
+  ye <- fpa_year_end_month(config, res$status, as.character(res$pnl$periode))
+  cash <- fpa_objectif_read(res, "cash_ye", ye)
+  oi <- fpa_objectif_read(res, "oi_ye", ye)
+  cat("year-end ", ye, " cash ", round(cash), " oi ", round(oi), "\\n", sep = "")
+  if (!is.finite(cash) || !is.finite(oi)) stop("year-end target has no figure")
+  per <- as.character(res$pnl$periode[[nrow(res$pnl)]])
+  oi_trail <- fpa_oi_cell_read(config, per)
+  cash_trail <- fpa_cash_cell_read(config, per)
+  bs_trail <- fpa_bs_cell_read(config, per)
+  if (!is.list(oi_trail) || !is.list(cash_trail) || !is.list(bs_trail)) stop("calculation trail did not return")
+  outlook <- fpa_outlook_read(config)
+  if (!is.list(outlook)) stop("four-week outlook did not read")
+  cat("download bundle ok\\n")
+} else {
+  cat("download bundle ok (statements skipped: optional private test data absent)\\n")
+}
 ', gsub("\\\\", "/", cfg))
 con <- file(probe, "wb")
 writeBin(charToRaw(enc2utf8(probe_src)), con)

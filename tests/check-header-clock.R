@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (C) 2026 Julio Bauer Cantuaria
 # Header clock: fiscal-year progress and days left in the month.
-# Run from fpa-local: Rscript tests/check-header-clock.R
+# Run from the opensourcefpa-engine root: Rscript tests/check-header-clock.R
 
 root <- if (file.exists("R/fpa-health.R")) "." else ".."
 source(file.path(root, "R", "fpa-copy.R"), encoding = "UTF-8")

@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (C) 2026 Julio Bauer Cantuaria
 # Op/Fin optional contract: absent => empty; present => tags resolve.
+source("tests/helpers.R", encoding = "UTF-8")
 source("R/fpa-paths.R", encoding = "UTF-8")
 source("R/fpa-config.R", encoding = "UTF-8")
 source("R/fpa-op-fin.R", encoding = "UTF-8")
@@ -32,14 +33,16 @@ check(fpa_nature_keep("REV", m, "op_fin"), "keep op")
 check(fpa_nature_keep("TAX", m, "op_fin") == FALSE, "drop other under filter")
 check(identical(fpa_nature_norm("Exploitation"), "op"), "fr alias")
 
-# Live hotel config if present
-hotel <- "../fpa-local-test/fpa-config.json"
-if (file.exists(hotel)) {
+# Live hotel config if the optional private dataset is present
+hotel <- fpa_optional_data_config()
+if (!is.null(hotel)) {
   h <- fpa_load_config(hotel)
   check(fpa_line_nature_has(h, "pnl"), "hotel pnl has nature")
   hm <- fpa_line_nature(h, "pnl")
   check(identical(unname(hm[["FIN"]]), "fin"), "hotel FIN")
   check(identical(unname(hm[["REV"]]), "op"), "hotel REV")
+} else {
+  fpa_notify_skip_optional_data("hotel nature checks")
 }
 
 cat("PASS", pass, "\n")

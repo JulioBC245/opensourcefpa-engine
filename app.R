@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (C) 2026 Julio Bauer Cantuaria
 # app.R · v0.2.3 · 2026-10-16 16:08 · Publication du 16 octobre
-# fpa-local/app.R — Statements, variance, scenarios, drivers.
+# opensourcefpa-engine/app.R — Statements, variance, scenarios, drivers.
 # Launch: Rscript app.R "C:/path/fpa-config.json"
 # Or, once the engine is loaded: fpa_app("C:/path/fpa-config.json")
 # Actuals are read from work/. A scenario is computed in the session.

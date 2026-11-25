@@ -3,6 +3,7 @@
 # Pull checks. Uses the hotel project already published on localhost:3001.
 # A temp copy is used whenever a write could leave the working folder.
 root <- "."
+source(file.path(root, "tests", "helpers.R"), encoding = "UTF-8")
 source(file.path(root, "R/fpa-paths.R"), encoding = "UTF-8")
 source(file.path(root, "R/fpa-config.R"), encoding = "UTF-8")
 source(file.path(root, "R/fpa-sync.R"), encoding = "UTF-8")
@@ -20,7 +21,8 @@ check <- function(ok, label) {
   }
 }
 
-live <- "../fpa-local-test/fpa-config.json"
+live <- fpa_optional_data_config()
+if (is.null(live)) fpa_skip_if_no_optional_data("sync pull checks")
 cfg <- jsonlite::fromJSON(live, simplifyVector = FALSE)
 key <- as.character(cfg$project$key %||% "")
 check(nzchar(key), "local file has a project key")

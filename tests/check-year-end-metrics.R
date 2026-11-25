@@ -3,6 +3,7 @@
 # Year-end metrics: next fiscal close, the months it sums, and the hotel tie-out
 # (cash 37 099, fiscal-year OI 33 215, December OI −3 462).
 root <- Sys.getenv("FPA_LOCAL_DIR", ".")
+source(file.path(root, "tests", "helpers.R"), encoding = "UTF-8")
 source(file.path(root, "R", "fpa-paths.R"), encoding = "UTF-8")
 source(file.path(root, "R", "fpa-config.R"), encoding = "UTF-8")
 fpa_source_all(root)
@@ -63,8 +64,8 @@ say(k1$oi_fy == -5 && k1$oi_last == -5 && k1$oi == k1$oi_fy, "single month: year
 k0 <- fpa_scenario_cash_kpi(NULL, 0, "2026-12")
 say(is.na(k0$oi_fy) && is.na(k0$oi_last), "empty run gives NA")
 
-cfg <- Sys.getenv("FPA_CONFIG", "../fpa-local-test/fpa-config.json")
-if (file.exists(cfg)) {
+cfg <- fpa_optional_data_config()
+if (!is.null(cfg)) {
   config <- fpa_load_config(cfg)
   b <- fpa_run(cfg, write = FALSE, stop_on_error = FALSE)
   info <- fpa_year_end_info(config, b$period_status, as.character(b$pnl$periode))
@@ -72,7 +73,7 @@ if (file.exists(cfg)) {
   cash <- fpa_objectif_read(b, "cash_ye", info$close)
   oi_fy <- fpa_objectif_read(b, "oi_fy", info$close)
   oi_ye <- fpa_objectif_read(b, "oi_ye", info$close)
-  # Expectations follow a fresh fpa_run of fpa-local-test (not the last work CSVs).
+  # Expectations follow a fresh fpa_run of the optional private hotel dataset (not the last work CSVs).
   say(abs(cash - (-36642.19)) < 1, paste("hotel year-end cash", round(cash, 2)))
   say(abs(oi_fy - 31090.19) < 1, paste("hotel fiscal-year OI", round(oi_fy, 2)))
   say(abs(oi_ye - (-4170.36)) < 1, paste("hotel December OI", round(oi_ye, 2)))
@@ -86,7 +87,7 @@ if (file.exists(cfg)) {
   say(identical(snap_mar$fy_close, "2027-03") && identical(snap_mar$year_end_month, "2026-12"),
       "snapshot with a March close names the month it could read")
 } else {
-  cat("skip hotel tie-out (no FPA_CONFIG)\n")
+  fpa_notify_skip_optional_data("hotel year-end metric checks")
 }
 
 cat(sprintf("\n%d passed, %d failed\n", n_ok, fail))

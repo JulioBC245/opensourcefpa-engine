@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (C) 2026 Julio Bauer Cantuaria
-# fpa-lines.R — Engine line catalogue (mirror of fpa-web LINE_CATALOG)
+# fpa-lines.R — Engine line catalogue (kept in step with the opensourcefpa.com configurator)
 # LAST CHANGE: 2026-09-21 — PCG suffix lookup (Impots vs Impots, taxes…)
 
 FPA_LINE_CATALOG <- data.frame(

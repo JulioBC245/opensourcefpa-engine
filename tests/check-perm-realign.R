@@ -7,7 +7,7 @@ setwd(root)
 source("tests/helpers.R", encoding = "UTF-8")
 fpa_test_bootstrap()
 
-base <- "../fpa-local-test"
+base <- fpa_skip_if_no_optional_data("permanent realign checks")
 config <- fpa_load_config(file.path(base, "fpa-config.json"))
 built <- fpa_driver_bottom_build(config)
 wide <- built$outcome

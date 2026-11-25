@@ -28,9 +28,10 @@ ev <- data.frame(
 stopifnot(identical(fpa_chain_used_lines(ev), "TAX"))
 stopifnot(isTRUE(fpa_chain_has_import(ev)))
 
-hotel <- "../fpa-local-test/fpa-config.json"
-long <- "../fpa-local-test/work/pnl-monthly-long.csv"
-if (file.exists(hotel)) {
+opt <- fpa_optional_data_dir()
+if (!is.null(opt) && file.exists(file.path(opt, "fpa-config.json"))) {
+  hotel <- file.path(opt, "fpa-config.json")
+  long <- file.path(opt, "work", "pnl-monthly-long.csv")
   cfg <- fpa_load_config(hotel)
   evh <- if (file.exists(long)) utils::read.csv(long, stringsAsFactors = FALSE, fileEncoding = "UTF-8") else NULL
   ch <- fpa_chain_build(cfg, evh)
@@ -57,6 +58,8 @@ if (file.exists(hotel)) {
   cash <- ch$nodes[ch$nodes$id == "out:cash", , drop = FALSE]
   stopifnot(identical(pnl$status, "écrit"))
   stopifnot(identical(cash$status, "non vérifié"))
+} else {
+  fpa_notify_skip_optional_data("hotel chain checks")
 }
 
 stopifnot(identical(fpa_chain_status_bits(data.frame(status = c("présent", "présent", "sans suite"))), "2 présent · 1 sans suite"))

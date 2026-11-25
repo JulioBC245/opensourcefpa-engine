@@ -2,7 +2,7 @@
 # Copyright (C) 2026 Julio Bauer Cantuaria
 # Split driver pair: history Jan-Jun, recent file May-Jul.
 # The joined file keeps Jan-Apr from history and May-Jul from the recent file.
-# Run from fpa-local: Rscript tests/check-split-pair.R
+# Run from the opensourcefpa-engine root: Rscript tests/check-split-pair.R
 
 root <- if (file.exists("R/fpa-drivers.R")) "." else ".."
 source(file.path(root, "R", "fpa-copy.R"), encoding = "UTF-8")

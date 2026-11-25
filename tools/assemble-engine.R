@@ -3,9 +3,8 @@
 # Assemble the subscriber fpa-engine.R (one readable file) from R/ modules.
 # LAST CHANGE: 2026-09-30 — the module list is engine-modules.txt only.
 #
-# Usage, from fpa-local:
-#   Rscript tools/assemble-engine.R
-#   Rscript tools/assemble-engine.R "C:/path/fpa-engine.R"
+# Usage, from the opensourcefpa-engine repository root:
+#   Rscript tools/assemble-engine.R path/to/fpa-engine.R
 
 root <- if (dir.exists("R")) {
   normalizePath(getwd(), winslash = "/", mustWork = TRUE)
@@ -76,7 +75,7 @@ if (!grepl("\n$", out)) out <- paste0(out, "\n")
 
 dest <- commandArgs(trailingOnly = TRUE)
 if (!length(dest) || !nzchar(dest[[1]])) {
-  dest <- "../fpa-local-test/fpa-engine.R"
+  stop("Pass the output path: Rscript tools/assemble-engine.R path/to/fpa-engine.R")
 } else {
   dest <- dest[[1]]
 }

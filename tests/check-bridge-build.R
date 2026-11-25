@@ -4,6 +4,7 @@
 #' reset mode must restart every month at zero, and label tiers must thin out on long spans.
 `%||%` <- function(a, b) if (is.null(a) || !length(a)) b else a
 root <- Sys.getenv("FPA_LOCAL_DIR", ".")
+source(file.path(root, "tests", "helpers.R"), encoding = "UTF-8")
 env <- new.env(parent = globalenv())
 assign("%||%", `%||%`, envir = env)
 for (ex in parse(file.path(root, "app.R"))) {
@@ -16,8 +17,9 @@ for (ex in parse(file.path(root, "app.R"))) {
   try(eval(ex, envir = env), silent = TRUE)
 }
 
+opt <- fpa_skip_if_no_optional_data("cash bridge build checks")
 cash <- utils::read.csv(
-  "../fpa-local-test/work/cash-bridge-monthly.csv",
+  file.path(opt, "work", "cash-bridge-monthly.csv"),
   stringsAsFactors = FALSE
 )
 build <- get("fpa_shiny_bridge_build", envir = env)

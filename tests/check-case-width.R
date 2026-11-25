@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (C) 2026 Julio Bauer Cantuaria
 # A forecast month keeps its scenario percent even when the driver form is present.
-# Run from fpa-local: Rscript tests/check-case-width.R
+# Run from the opensourcefpa-engine root: Rscript tests/check-case-width.R
 
 source("tests/helpers.R", encoding = "UTF-8")
 fpa_test_bootstrap()

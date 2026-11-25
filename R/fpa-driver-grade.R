@@ -124,7 +124,7 @@ fpa_driver_bound_meta <- function(config) {
   list(labels = labels, formula = formula, kind = kind)
 }
 
-#' Sugar score. An identity keeps its prior undamped. A measured independent
+#' Driver score. An identity keeps its prior undamped. A measured independent
 #' series is 0.75 evidence + 0.25 prior. An unmeasured series keeps 0.35 of its prior.
 fpa_driver_score <- function(abs_r, prior, relation, measured) {
   pr <- if (is.finite(prior)) max(0, min(1, prior)) else 0

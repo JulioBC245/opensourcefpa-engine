@@ -91,9 +91,10 @@ stopifnot(r_best$bg != r_worst$bg)
 stopifnot(grepl("^#[cdef]", r_worst$bg))
 stopifnot(grepl("^#[12]", r_best$bg))
 
-hotel_g <- "../fpa-local-test/work/drivers/driver-grades.csv"
-hotel_c <- "../fpa-local-test/work/drivers/driver-candidates.csv"
-if (file.exists(hotel_g) && file.exists(hotel_c)) {
+opt <- fpa_optional_data_dir()
+hotel_g <- if (is.null(opt)) "" else file.path(opt, "work", "drivers", "driver-grades.csv")
+hotel_c <- if (is.null(opt)) "" else file.path(opt, "work", "drivers", "driver-candidates.csv")
+if (nzchar(hotel_g) && file.exists(hotel_g) && file.exists(hotel_c)) {
   hg <- utils::read.csv(hotel_g, stringsAsFactors = FALSE, fileEncoding = "UTF-8")
   hc <- utils::read.csv(hotel_c, stringsAsFactors = FALSE, fileEncoding = "UTF-8")
   hv <- fpa_driver_map_volume(hc, hg)
@@ -128,6 +129,8 @@ if (file.exists(hotel_g) && file.exists(hotel_c)) {
   stopifnot(identical(cap_tag, ""))
   stopifnot(hp$state[hp$series_id == "src-ops_other__nuitees_vendues"] == "missing")
   stopifnot(hp$state[hp$series_id == "src-ops_other__capacite"] == "missing")
+} else {
+  fpa_notify_skip_optional_data("hotel driver-map checks")
 }
 
 message("PASS driver-map")

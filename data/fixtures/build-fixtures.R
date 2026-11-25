@@ -1,10 +1,10 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (C) 2026 Julio Bauer Cantuaria
-# Generate fictional 24-month fixture company (Exemple SAS). Run once from fpa-local root.
+# Generate fictional 24-month fixture company (Exemple SAS). Run once from the opensourcefpa-engine root.
 # LAST CHANGE: 2026-09-18
 
 root <- normalizePath(".", winslash = "/")
-if (!dir.exists(file.path(root, "R"))) stop("Run from fpa-local root")
+if (!dir.exists(file.path(root, "R"))) stop("Run from the opensourcefpa-engine root")
 
 indir <- file.path(root, "data", "fixtures", "input")
 cfgdir <- file.path(root, "data", "fixtures", "config")

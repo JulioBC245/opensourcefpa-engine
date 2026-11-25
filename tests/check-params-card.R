@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (C) 2026 Julio Bauer Cantuaria
 # Paramètres card: what a sync brought in, and script versions against the server.
-# Run from fpa-local: Rscript tests/check-params-card.R
+# Run from the opensourcefpa-engine root: Rscript tests/check-params-card.R
 
 `%||%` <- function(a, b) if (is.null(a)) b else a
 root <- if (file.exists("app.R")) "." else ".."

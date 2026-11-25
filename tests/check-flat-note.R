@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (C) 2026 Julio Bauer Cantuaria
 # A flat scenario says so. A moving result does not claim to be stuck.
-# Run from fpa-local: Rscript tests/check-flat-note.R
+# Run from the opensourcefpa-engine root: Rscript tests/check-flat-note.R
 
 source("tests/helpers.R", encoding = "UTF-8")
 fpa_test_bootstrap()

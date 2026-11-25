@@ -1,12 +1,11 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (C) 2026 Julio Bauer Cantuaria
-# Live hotel configuration, when the file is on this machine.
-# Skips quietly elsewhere so the suite still runs.
+# Live hotel configuration, when the optional private dataset is present.
 source("tests/helpers.R", encoding = "UTF-8")
 root <- fpa_test_bootstrap()
-cfg <- "../fpa-local-test/fpa-config.json"
-if (!file.exists(cfg)) {
-  message("SKIP live hotel: config absent")
+cfg <- fpa_optional_data_config()
+if (is.null(cfg)) {
+  fpa_skip_if_no_optional_data("live hotel run")
 } else {
   res <- fpa_run(cfg, write = FALSE, stop_on_error = TRUE)
   stopifnot(nrow(res$pnl) >= 24)

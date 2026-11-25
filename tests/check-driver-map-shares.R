@@ -1,10 +1,11 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (C) 2026 Julio Bauer Cantuaria
 # Driver map: each P&L line's share in the spread of its subtotal.
-# Shares of one subtotal must add to 100 %. Run from fpa-local: Rscript tests/check-driver-map-shares.R
+# Shares of one subtotal must add to 100 %. Run from the opensourcefpa-engine root: Rscript tests/check-driver-map-shares.R
 
 `%||%` <- function(a, b) if (is.null(a)) b else a
 root <- if (file.exists("app.R")) "." else ".."
+source(file.path(root, "tests", "helpers.R"), encoding = "UTF-8")
 source(file.path(root, "R", "fpa-driver-map.R"), encoding = "UTF-8")
 
 pass <- 0L
@@ -24,7 +25,8 @@ build <- function(rev, cogs, payroll, opex, da, other = rep(0, length(rev))) {
   )
 }
 
-hotel_dir <- file.path(root, "..", "fpa-local-test", "work")
+opt <- fpa_skip_if_no_optional_data("driver map share checks")
+hotel_dir <- file.path(opt, "work")
 pnl <- utils::read.csv(file.path(hotel_dir, "pnl-monthly.csv"), stringsAsFactors = FALSE)
 status <- utils::read.csv(file.path(hotel_dir, "period-status.csv"), stringsAsFactors = FALSE)
 s <- fpa_driver_map_shares(pnl, status)

@@ -51,7 +51,7 @@ stopifnot(any(findings4$code == "duplicate_month"))
 # --- unmatched budget line ---
 bud <- utils::read.csv(file.path(root, "data", "fixtures", "input", "budget.csv"),
                        stringsAsFactors = FALSE, fileEncoding = "UTF-8")
-bud <- rbind(bud, data.frame(libelle = "Poste inconnu XYZ", periode = "2024-01", montant = 1,
+bud <- rbind(bud, data.frame(libelle = "Poste inconnu sans correspondance", periode = "2024-01", montant = 1,
                              stringsAsFactors = FALSE))
 bud_file <- file.path(root, "work", "budget-unmatched.csv")
 utils::write.csv(bud, bud_file, row.names = FALSE)

@@ -8,7 +8,7 @@ setwd(root)
 source("tests/helpers.R", encoding = "UTF-8")
 fpa_test_bootstrap()
 
-base <- "../fpa-local-test"
+base <- fpa_skip_if_no_optional_data("two-goals checks")
 config <- fpa_load_config(file.path(base, "fpa-config.json"))
 grades <- utils::read.csv(file.path(base, "work/drivers/driver-grades.csv"), stringsAsFactors = FALSE)
 built <- fpa_driver_bottom_build(config)

@@ -67,11 +67,12 @@ stopifnot(nrow(thin) == 1L && thin$line_id[[1]] == "cash_ratio")
 full <- fpa_anomaly_scan(bs_ok, pnl, cash_ok, vol, hist, map, "2026-09")
 stopifnot(!any(full$line_id %in% c("beneish", "sloan", "energy_eur_per_t")))
 
-hotel_bs <- "../fpa-local-test/work/bs-monthly.csv"
-hotel_pnl <- "../fpa-local-test/work/pnl-monthly.csv"
-hotel_cash <- "../fpa-local-test/work/cash-bridge-monthly.csv"
-if (file.exists(hotel_bs)) {
-  cfg <- fpa_load_config("../fpa-local-test/fpa-config.json")
+opt <- fpa_optional_data_dir()
+hotel_bs <- if (is.null(opt)) "" else file.path(opt, "work", "bs-monthly.csv")
+hotel_pnl <- if (is.null(opt)) "" else file.path(opt, "work", "pnl-monthly.csv")
+hotel_cash <- if (is.null(opt)) "" else file.path(opt, "work", "cash-bridge-monthly.csv")
+if (nzchar(hotel_bs) && file.exists(hotel_bs)) {
+  cfg <- fpa_load_config(file.path(opt, "fpa-config.json"))
   paths <- fpa_paths(cfg)
   h <- fpa_anomaly_scan(
     utils::read.csv(hotel_bs, stringsAsFactors = FALSE),
@@ -86,5 +87,7 @@ if (file.exists(hotel_bs)) {
   cat("breaks", sum(h$level == "break"), " watches", sum(h$level == "watch"), "\n")
   show <- h[h$level != "clear", c("family", "periode", "line_id", "gap")]
   print(utils::head(show, 12))
+} else {
+  fpa_notify_skip_optional_data("hotel anomaly checks")
 }
 cat("PASS anomaly\n")

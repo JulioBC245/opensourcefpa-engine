@@ -3,6 +3,7 @@
 # Break-even surface: the tooltip names both shocks, the income, and how far volume can fall.
 `%||%` <- function(a, b) if (is.null(a) || !length(a)) b else a
 root <- Sys.getenv("FPA_LOCAL_DIR", ".")
+source(file.path(root, "tests", "helpers.R"), encoding = "UTF-8")
 options(fpa.lang = "en")
 source(file.path(root, "R", "fpa-copy.R"), encoding = "UTF-8")
 source(file.path(root, "R", "fpa-chart-expert.R"), encoding = "UTF-8")
@@ -13,7 +14,7 @@ say <- function(ok, msg) {
   cat(if (ok) "ok   " else "FAIL ", msg, "\n", sep = "")
 }
 
-home <- "../fpa-hotel-alpes/work"
+home <- file.path(fpa_skip_if_no_optional_data("chart expert checks", dataset = "hotel-alpes"), "work")
 pnl <- utils::read.csv(file.path(home, "pnl-monthly.csv"), stringsAsFactors = FALSE)
 bs <- utils::read.csv(file.path(home, "bs-monthly.csv"), stringsAsFactors = FALSE)
 status <- utils::read.csv(file.path(home, "period-status.csv"), stringsAsFactors = FALSE)

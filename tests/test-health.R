@@ -96,9 +96,10 @@ stopifnot(identical(z2$key, "health_band_ample") && isTRUE(z2$beyond))
 z3 <- fpa_health_gauge_zone("debt_to_equity", 0.45)
 stopifnot(identical(z3$key, "health_band_light"))
 
-hotel_bs <- "../fpa-local-test/work/bs-monthly.csv"
-hotel_pnl <- "../fpa-local-test/work/pnl-monthly.csv"
-if (file.exists(hotel_bs) && file.exists(hotel_pnl)) {
+opt <- fpa_optional_data_dir()
+hotel_bs <- if (is.null(opt)) "" else file.path(opt, "work", "bs-monthly.csv")
+hotel_pnl <- if (is.null(opt)) "" else file.path(opt, "work", "pnl-monthly.csv")
+if (nzchar(hotel_bs) && file.exists(hotel_bs) && file.exists(hotel_pnl)) {
   hbs <- utils::read.csv(hotel_bs, stringsAsFactors = FALSE)
   hpn <- utils::read.csv(hotel_pnl, stringsAsFactors = FALSE)
   live <- fpa_health_month(hbs, hpn, "2026-09")
@@ -108,5 +109,7 @@ if (file.exists(hotel_bs) && file.exists(hotel_pnl)) {
   cat("hotel cash_ratio", live$value[live$id == "cash_ratio"],
       "book_ev", live$value[live$id == "book_ev"],
       "oi_margin", live$value[live$id == "oi_margin"], "\n")
+} else {
+  fpa_notify_skip_optional_data("hotel health checks")
 }
 cat("PASS health\n")

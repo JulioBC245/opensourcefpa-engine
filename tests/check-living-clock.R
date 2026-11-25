@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (C) 2026 Julio Bauer Cantuaria
 # Living file: a month already in the file is kept. Only a missing open month is filled.
-# Run from fpa-local: Rscript tests/check-living-clock.R
+# Run from the opensourcefpa-engine root: Rscript tests/check-living-clock.R
 
 root <- if (file.exists("R/fpa-drivers.R")) "." else ".."
 source(file.path(root, "R", "fpa-copy.R"), encoding = "UTF-8")

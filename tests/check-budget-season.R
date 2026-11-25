@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (C) 2026 Julio Bauer Cantuaria
 # Seasonal budget: a flat voted year follows the kept prior years. The total does not move.
-# Run from fpa-local: Rscript tests/check-budget-season.R
+# Run from the opensourcefpa-engine root: Rscript tests/check-budget-season.R
 source("tests/helpers.R", encoding = "UTF-8")
 fpa_test_bootstrap()
 
@@ -78,8 +78,8 @@ check("price + volume + mix + unexplained still equals the gap",
       all(abs(reb$price + reb$volume + reb$mix + reb$unexplained - reb$variance) < 0.01))
 check("the year budget in the variance is still 12 000", near(sum(reb$budget), 12000, 0.01))
 
-hotel <- "../fpa-local-test/fpa-config.json"
-if (file.exists(hotel)) {
+hotel <- fpa_optional_data_config()
+if (!is.null(hotel)) {
   cfg <- fpa_load_config(hotel)
   paths <- fpa_paths(cfg)
   bud <- utils::read.csv(file.path(paths$work, "budget-monthly.csv"), stringsAsFactors = FALSE)
@@ -99,6 +99,8 @@ if (file.exists(hotel)) {
   cat("hotel 2025 only jan/aug:",
       one_rev$montant[one_rev$periode == "2026-01"],
       one_rev$montant[one_rev$periode == "2026-08"], "\n")
+} else {
+  fpa_notify_skip_optional_data("hotel budget season checks")
 }
 
 cat(sprintf("\n%d pass, %d fail\n", pass, fail))

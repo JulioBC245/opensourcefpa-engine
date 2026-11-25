@@ -2,7 +2,7 @@
 # Copyright (C) 2026 Julio Bauer Cantuaria
 # Manual ledger: moves cash / P&L / BFR without breaking identity or the budget.
 # Runs on a temp copy of Hotel Alpes. Never touches the live hotel files.
-# From fpa-local: Rscript tests/check-manual-entries.R
+# From the opensourcefpa-engine root: Rscript tests/check-manual-entries.R
 
 source("tests/helpers.R", encoding = "UTF-8")
 fpa_test_bootstrap()
@@ -19,7 +19,7 @@ check <- function(label, ok) {
   }
 }
 
-hotel <- "../fpa-hotel-alpes"
+hotel <- fpa_skip_if_no_optional_data("manual ledger checks", dataset = "hotel-alpes")
 box <- file.path(tempdir(), paste0("fpa-manual-", as.integer(runif(1, 1, 1e9))))
 dir.create(box, recursive = TRUE, showWarnings = FALSE)
 # Copy only what the engine needs. Skip the assembled engine binary-size file if huge.

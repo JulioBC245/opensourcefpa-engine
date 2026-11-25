@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (C) 2026 Julio Bauer Cantuaria
 # Two balance-sheet dates: side deltas tie to the side total.
-# Run from fpa-local: Rscript tests/check-bs-compare.R
+# Run from the opensourcefpa-engine root: Rscript tests/check-bs-compare.R
 
 source("tests/helpers.R", encoding = "UTF-8")
 fpa_test_bootstrap()

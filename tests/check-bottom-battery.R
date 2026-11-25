@@ -9,7 +9,7 @@ fpa_test_bootstrap()
 parse_app <- parse(file.path(root, "app.R"))
 stopifnot(length(parse_app) > 0)
 
-base <- "../fpa-local-test"
+base <- fpa_skip_if_no_optional_data("bottom battery checks")
 config <- fpa_load_config(file.path(base, "fpa-config.json"))
 grades_path <- file.path(base, "work/drivers/driver-grades.csv")
 grades <- utils::read.csv(grades_path, stringsAsFactors = FALSE)

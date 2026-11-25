@@ -2,7 +2,7 @@
 # Copyright (C) 2026 Julio Bauer Cantuaria
 # Closed-month capex and debt still move reconstructed cash.
 # Depreciation starts in the first open month. The closed P&L is unchanged.
-# Run from fpa-local: Rscript tests/check-calendar-closed.R
+# Run from the opensourcefpa-engine root: Rscript tests/check-calendar-closed.R
 
 source("tests/helpers.R", encoding = "UTF-8")
 fpa_test_bootstrap()

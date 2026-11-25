@@ -4,8 +4,8 @@
 source("tests/helpers.R", encoding = "UTF-8")
 fpa_test_bootstrap()
 
-hotel <- "../fpa-local-test/fpa-config.json"
-stopifnot(file.exists(hotel))
+hotel <- fpa_optional_data_config()
+if (is.null(hotel)) fpa_skip_if_no_optional_data("statement cell checks")
 cfg <- fpa_load_config(hotel)
 paths <- fpa_paths(cfg)
 cash <- utils::read.csv(file.path(paths$work, "cash-bridge-monthly.csv"), stringsAsFactors = FALSE)

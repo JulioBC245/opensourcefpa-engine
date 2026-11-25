@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (C) 2026 Julio Bauer Cantuaria
 # Écarts tab: heat map, line story, bridge, causes and table must tie to the variance file.
-# Run from fpa-local: Rscript tests/check-variance-page.R
+# Run from the opensourcefpa-engine root: Rscript tests/check-variance-page.R
 source("tests/helpers.R", encoding = "UTF-8")
 fpa_test_bootstrap()
 suppressPackageStartupMessages(library(shiny))
@@ -26,7 +26,8 @@ count <- function(pattern, s) lengths(regmatches(s, gregexpr(pattern, s, fixed =
 near <- function(a, b, tol = 1) is.finite(a) && is.finite(b) && abs(a - b) <= tol
 raw_ids <- "\\b(REV|OTHER_OP_INC|COGS|PAYROLL|OPEX_OTHER|D_A|FIN|EXCEP|TAX|unexplained|variance_pct|headcount|line_id)\\b"
 
-hotel <- "../fpa-local-test/fpa-config.json"
+hotel <- fpa_optional_data_config()
+if (is.null(hotel)) fpa_skip_if_no_optional_data("variance page checks")
 cfg <- fpa_load_config(hotel)
 paths <- fpa_paths(cfg)
 v <- utils::read.csv(file.path(paths$work, "variance-monthly.csv"), stringsAsFactors = FALSE)

@@ -2,7 +2,7 @@
 # Copyright (C) 2026 Julio Bauer Cantuaria
 # Run report: one post after a clean real run. Nothing on a failed run,
 # offline, in local mode, or from a scenario or sensitivity call.
-# Run from fpa-local: Rscript tests/check-run-report.R
+# Run from the opensourcefpa-engine root: Rscript tests/check-run-report.R
 
 `%||%` <- function(a, b) if (is.null(a)) b else a
 root <- if (file.exists("R/fpa-sync.R")) "." else ".."

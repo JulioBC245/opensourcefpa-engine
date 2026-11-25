@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (C) 2026 Julio Bauer Cantuaria
 # Opening working capital is its own bridge step.
-# Run from fpa-local: Rscript tests/check-wc-opening.R
+# Run from the opensourcefpa-engine root: Rscript tests/check-wc-opening.R
 
 source("tests/helpers.R", encoding = "UTF-8")
 fpa_test_bootstrap()

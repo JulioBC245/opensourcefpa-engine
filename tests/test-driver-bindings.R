@@ -8,11 +8,7 @@ setwd(root)
 source("tests/helpers.R", encoding = "UTF-8")
 fpa_test_bootstrap()
 
-base <- "../fpa-local-test"
-if (!file.exists(file.path(base, "fpa-config.json"))) {
-  message("SKIP driver bindings: hotel copy absent")
-  quit(status = 0L)
-}
+base <- fpa_skip_if_no_optional_data("driver bindings")
 
 tmp <- file.path(tempdir(), "fpa-bindings")
 unlink(tmp, recursive = TRUE)

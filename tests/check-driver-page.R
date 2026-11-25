@@ -1,10 +1,11 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (C) 2026 Julio Bauer Cantuaria
 # Drivers tab: copy keys, glossary tooltips, row caps, no literal "%%" on screen.
-# Run from fpa-local: Rscript tests/check-driver-page.R
+# Run from the opensourcefpa-engine root: Rscript tests/check-driver-page.R
 
 `%||%` <- function(a, b) if (is.null(a)) b else a
 root <- if (file.exists("app.R")) "." else ".."
+source(file.path(root, "tests", "helpers.R"), encoding = "UTF-8")
 suppressPackageStartupMessages(library(shiny))
 source(file.path(root, "R", "fpa-copy.R"), encoding = "UTF-8")
 source(file.path(root, "R", "fpa-driver-map.R"), encoding = "UTF-8")
@@ -62,17 +63,22 @@ h30 <- html(shiny::tagList(c30$rows))
 check("cap at 30 rows: all 30 kept, 22 hidden", length(c30$rows) == 30L && c30$n_hidden == 22L && count("fpa-cap-hidden", h30) == 22L)
 check("cap at 30 rows: button says 22 more", grepl("Afficher les 22 autres lignes", html(c30$toggle), fixed = TRUE))
 
-grades <- utils::read.csv(file.path(root, "..", "fpa-local-test", "work", "drivers", "driver-grades.csv"), stringsAsFactors = FALSE)
-check(sprintf("hotel grades load (%d series)", nrow(grades)), nrow(grades) >= 1L)
-oi <- html(fpa_shiny_goal_table(grades, "", "oi"))
-ln <- html(fpa_shiny_goal_table(grades, "", "line"))
-check("result table: no literal %% on screen", !grepl("%%", oi, fixed = TRUE) && !grepl("%%", ln, fixed = TRUE))
-check("result table: method sits in a closed fold", grepl("<details class=\"fpa-drv-fold-lite\">", oi, fixed = TRUE))
-check("result table: headers carry tooltips (r, partial r, rank, lag, months)", count("class=\"fpa-term\"", oi) >= 6L)
-n_oi <- sum(as.character(grades$bottom_line) == "OI")
-check(sprintf("result table: one row per OI series (%d)", n_oi), count("<tr", oi) == n_oi + 1L)
-tests <- html(fpa_shiny_tests_table(grades, "", list()))
-check("tests tab: no raw 'Confirmé' header for saved views", grepl("Avis enregistré", tests, fixed = TRUE))
+opt <- fpa_optional_data_dir()
+if (!is.null(opt) && file.exists(file.path(opt, "work", "drivers", "driver-grades.csv"))) {
+  grades <- utils::read.csv(file.path(opt, "work", "drivers", "driver-grades.csv"), stringsAsFactors = FALSE)
+  check(sprintf("hotel grades load (%d series)", nrow(grades)), nrow(grades) >= 1L)
+  oi <- html(fpa_shiny_goal_table(grades, "", "oi"))
+  ln <- html(fpa_shiny_goal_table(grades, "", "line"))
+  check("result table: no literal %% on screen", !grepl("%%", oi, fixed = TRUE) && !grepl("%%", ln, fixed = TRUE))
+  check("result table: method sits in a closed fold", grepl("<details class=\"fpa-drv-fold-lite\">", oi, fixed = TRUE))
+  check("result table: headers carry tooltips (r, partial r, rank, lag, months)", count("class=\"fpa-term\"", oi) >= 6L)
+  n_oi <- sum(as.character(grades$bottom_line) == "OI")
+  check(sprintf("result table: one row per OI series (%d)", n_oi), count("<tr", oi) == n_oi + 1L)
+  tests <- html(fpa_shiny_tests_table(grades, "", list()))
+  check("tests tab: no raw 'Confirmé' header for saved views", grepl("Avis enregistré", tests, fixed = TRUE))
+} else {
+  fpa_notify_skip_optional_data("hotel driver page checks")
+}
 
 lead <- fpa_shiny_lag_label(-3L, -0.57, -3, 5, TRUE, TRUE)
 check("lag label is accented and dash-free", grepl("corrélation", lead) && grepl("recommandation du moteur", lead) && !grepl("\u2014", lead))

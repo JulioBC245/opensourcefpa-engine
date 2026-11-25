@@ -3,6 +3,7 @@
 # Composer catalog, selection, HTML order, empty-col drop, Edge PDF.
 `%||%` <- function(a, b) if (is.null(a) || !length(a)) b else a
 root <- Sys.getenv("FPA_LOCAL_DIR", ".")
+source(file.path(root, "tests", "helpers.R"), encoding = "UTF-8")
 source(file.path(root, "R", "fpa-copy.R"), encoding = "UTF-8")
 source(file.path(root, "R", "fpa-ai-report.R"), encoding = "UTF-8")
 source(file.path(root, "R", "fpa-report.R"), encoding = "UTF-8")
@@ -142,8 +143,9 @@ say(grepl(sealed$hash, csv[[2]], fixed = TRUE), "csv row has the hash")
 say(identical(fpa_ai_read_utf8(dummy), "not a real pdf"), "pdf bytes unchanged")
 
 source(file.path(root, "R", "fpa-health.R"), encoding = "UTF-8")
-books <- "../fpa-hotel-alpes/work"
-if (file.exists(file.path(books, "bs-monthly.csv"))) {
+opt <- fpa_optional_data_dir("hotel-alpes")
+books <- if (is.null(opt)) "" else file.path(opt, "work")
+if (nzchar(books) && file.exists(file.path(books, "bs-monthly.csv"))) {
   old_lang <- getOption("fpa.lang")
   options(fpa.lang = "en")
   bs_h <- utils::read.csv(file.path(books, "bs-monthly.csv"), stringsAsFactors = FALSE)
@@ -162,7 +164,7 @@ if (file.exists(file.path(books, "bs-monthly.csv"))) {
   say(is.null(fpa_rep_health_frame(empty_h)), "an empty health frame is not a list of missing columns")
   options(fpa.lang = old_lang)
 } else {
-  say(FALSE, "hotel books present")
+  fpa_notify_skip_optional_data("hotel health frame checks", dataset = "hotel-alpes")
 }
 
 unlink(box, recursive = TRUE)

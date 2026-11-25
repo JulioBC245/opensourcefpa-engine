@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (C) 2026 Julio Bauer Cantuaria
 # Clôture tab: steps, version gap, register, lock drift and budget must tie to the work files.
-# Run from fpa-local: Rscript tests/check-close-page.R
+# Run from the opensourcefpa-engine root: Rscript tests/check-close-page.R
 source("tests/helpers.R", encoding = "UTF-8")
 fpa_test_bootstrap()
 suppressPackageStartupMessages(library(shiny))
@@ -28,7 +28,8 @@ near <- function(a, b, tol = 1) is.finite(a) && is.finite(b) && abs(a - b) <= to
 raw_ids <- "\\b(REV|OTHER_OP_INC|COGS|PAYROLL|OPEX_OTHER|D_A|FIN|EXCEP|TAX|line_id|periode|[0-9]{8}-[0-9]{6}|20[0-9]{2}-[0-9]{2}(?!-))\\b"
 no_raw <- function(s) !grepl(raw_ids, visible(s), perl = TRUE)
 
-hotel <- "../fpa-local-test/fpa-config.json"
+hotel <- fpa_optional_data_config()
+if (is.null(hotel)) fpa_skip_if_no_optional_data("close page checks")
 p <- fpa_shiny_load(hotel)
 check("hotel pack loads", isTRUE(p$ok) && nrow(p$finance$pnl) == 12L)
 st <- fpa_close_state(p)

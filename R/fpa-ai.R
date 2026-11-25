@@ -59,7 +59,11 @@ fpa_ai_provider <- function(id) {
 fpa_ai_key_path <- function() {
   override <- getOption("fpa.ai.key_path", "")
   if (nzchar(override %||% "")) return(as.character(override))
-  file.path(tools::R_user_dir("fpa-local", "config"), "ai-key.json")
+  new_path <- file.path(tools::R_user_dir("opensourcefpa-engine", "config"), "ai-key.json")
+  if (file.exists(new_path)) return(new_path)
+  old_path <- file.path(tools::R_user_dir("fpa-local", "config"), "ai-key.json")
+  if (file.exists(old_path)) return(old_path)
+  new_path
 }
 
 fpa_ai_settings_path <- function(config_path) {

@@ -4,6 +4,7 @@
 # Calendar dated on the map, ';' edit round-trip, parameters in force, driver states,
 # thin liquidity, forecast rows in variances, the À faire count, and the extremes.
 root <- Sys.getenv("FPA_LOCAL_DIR", ".")
+source(file.path(root, "tests", "helpers.R"), encoding = "UTF-8")
 source(file.path(root, "R", "fpa-paths.R"), encoding = "UTF-8")
 source(file.path(root, "R", "fpa-config.R"), encoding = "UTF-8")
 fpa_source_all(root)
@@ -188,8 +189,8 @@ one <- fpa_year_end_info(list(company = list(fiscal_year_end_month = 12L)),
                          data.frame(periode = "2026-09", status = "actual", stringsAsFactors = FALSE), "2026-09")
 say(identical(one$close, "2026-12") && identical(one$measured, "2026-09") && isTRUE(one$beyond), "one month: close December, measured September")
 
-cfg <- Sys.getenv("FPA_CONFIG", "../fpa-local-test/fpa-config.json")
-if (file.exists(cfg)) {
+cfg <- fpa_optional_data_config()
+if (!is.null(cfg)) {
   config <- fpa_load_config(cfg)
   ch <- fpa_chain_build(config, NULL)
   meteo <- ch$nodes[ch$nodes$title == "meteo", , drop = FALSE]
@@ -249,7 +250,7 @@ if (file.exists(cfg)) {
   say(abs(fpa_objectif_read(b, "cash_ye", info$close) - (-36642.19)) < 1 && abs(fpa_objectif_read(b, "oi_fy", info$close) - 31090.19) < 1,
       "year-end objective reads match a fresh fpa_run")
 } else {
-  cat("skip hotel checks (no FPA_CONFIG)\n")
+  fpa_notify_skip_optional_data("hotel view-consistency checks")
 }
 
 cat(sprintf("\n%d passed, %d failed\n", n_ok, fail))

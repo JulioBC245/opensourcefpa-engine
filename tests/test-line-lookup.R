@@ -21,11 +21,11 @@ stopifnot(identical(
   "TAX"
 ))
 stopifnot(identical(fpa_lookup_line("Chiffre d'affaires net", m), "REV"))
-stopifnot(is.na(fpa_lookup_line("Poste inconnu XYZ", m)))
+stopifnot(is.na(fpa_lookup_line("Poste inconnu sans correspondance", m)))
 stopifnot(is.na(fpa_lookup_line("", m)))
 
 mapped <- fpa_lookup_lines(
-  c("Impôts, taxes et versements assimilés", "Poste inconnu XYZ"),
+  c("Impôts, taxes et versements assimilés", "Poste inconnu sans correspondance"),
   m
 )
 stopifnot(identical(mapped[[1]], "OPEX_OTHER"), is.na(mapped[[2]]))

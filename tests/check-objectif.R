@@ -2,6 +2,7 @@
 # Copyright (C) 2026 Julio Bauer Cantuaria
 # Objectif G2: year-end month, metric read, grid, reverse solve on hotel pack.
 root <- "."
+source(file.path(root, "tests", "helpers.R"), encoding = "UTF-8")
 source(file.path(root, "R", "fpa-paths.R"), encoding = "UTF-8")
 source(file.path(root, "R", "fpa-config.R"), encoding = "UTF-8")
 fpa_source_all(root)
@@ -55,12 +56,9 @@ say(isTRUE(all.equal(fpa_objectif_read(fake, "cash_ye", "2026-12"), 60000)), "re
 say(isTRUE(all.equal(fpa_objectif_read(fake, "oi_ye", "2026-12"), 2000)), "read OI YE")
 say(isTRUE(all.equal(fpa_objectif_read(fake, "oi_fy", "2026-12"), 3000)), "read OI fiscal year")
 
-cfg <- Sys.getenv(
-  "FPA_CONFIG",
-  "../fpa-local-test/fpa-config.json"
-)
-if (!file.exists(cfg)) {
-  cat("skip live solve (no FPA_CONFIG)\n")
+cfg <- fpa_optional_data_config()
+if (is.null(cfg)) {
+  fpa_notify_skip_optional_data("live objective solve")
   cat(if (fail) paste0("\n", fail, " CHECK(S) FAILED\n") else "\nALL CHECKS PASSED\n")
   quit(save = "no", status = if (fail) 1L else 0L)
 }

@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (C) 2026 Julio Bauer Cantuaria
 # Cash bridge axis floor, window length, and the forecast divider.
-# Run from fpa-local: Rscript tests/check-bridge-axis.R
+# Run from the opensourcefpa-engine root: Rscript tests/check-bridge-axis.R
 
 source("tests/helpers.R", encoding = "UTF-8")
 fpa_test_bootstrap()

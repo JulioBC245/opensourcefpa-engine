@@ -2,8 +2,8 @@
 # Copyright (C) 2026 Julio Bauer Cantuaria
 # fpa-health.R — Ratios the books can support.
 # LAST CHANGE: 2026-09-29
-# A hotel with cash, a long loan, and almost no stock is not a sugar mill.
-# Cost per tonne and a buyer multiple are absent. What remains is read off
+# A hotel with cash, a long loan, and almost no stock is not a heavy manufacturer.
+# Cost per unit and a buyer multiple are absent. What remains is read off
 # the balance sheet and the year-to-date statement. The closed month is the
 # snapshot. A later month is a path, computed by the caller.
 

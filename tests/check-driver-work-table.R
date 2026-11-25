@@ -1,10 +1,11 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (C) 2026 Julio Bauer Cantuaria
 # Drivers "Votre avis" table: one proof, three tests, one overall reading per series.
-# Run from fpa-local: Rscript tests/check-driver-work-table.R
+# Run from the opensourcefpa-engine root: Rscript tests/check-driver-work-table.R
 
 `%||%` <- function(a, b) if (is.null(a)) b else a
 root <- if (file.exists("app.R")) "." else ".."
+source(file.path(root, "tests", "helpers.R"), encoding = "UTF-8")
 suppressPackageStartupMessages(library(shiny))
 source(file.path(root, "R", "fpa-copy.R"), encoding = "UTF-8")
 source(file.path(root, "R", "fpa-driver-map.R"), encoding = "UTF-8")
@@ -27,7 +28,8 @@ check <- function(label, ok) {
 html <- function(x) as.character(htmltools::renderTags(x)$html)
 count <- function(pattern, s) lengths(regmatches(s, gregexpr(pattern, s, fixed = TRUE)))
 
-work <- file.path(root, "..", "fpa-local-test", "work", "drivers")
+opt <- fpa_skip_if_no_optional_data("driver work table checks")
+work <- file.path(opt, "work", "drivers")
 grades <- utils::read.csv(file.path(work, "driver-grades.csv"), stringsAsFactors = FALSE)
 formulas <- utils::read.csv(file.path(work, "formula-checks.csv"), stringsAsFactors = FALSE)
 grades <- fpa_driver_state(grades, formulas, NULL)

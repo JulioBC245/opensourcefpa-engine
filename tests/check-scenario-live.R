@@ -3,14 +3,13 @@
 #' Live check on the hotel file: levers read their base, the engine moves, and a
 #' run is fast enough for a debounced slider.
 root <- "."
+source(file.path(root, "tests", "helpers.R"), encoding = "UTF-8")
 source(file.path(root, "R", "fpa-paths.R"), encoding = "UTF-8")
 source(file.path(root, "R", "fpa-config.R"), encoding = "UTF-8")
 fpa_source_all(root)
 
-cfg <- Sys.getenv(
-  "FPA_CONFIG",
-  "../fpa-local-test/fpa-config.json"
-)
+cfg <- fpa_optional_data_config()
+if (is.null(cfg)) fpa_skip_if_no_optional_data("live scenario checks")
 config <- fpa_load_config(cfg)
 paths <- fpa_paths(config)
 ids <- fpa_enabled_assumption_ids(config)

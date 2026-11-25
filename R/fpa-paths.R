@@ -25,15 +25,18 @@ fpa_detect_root <- function() {
     return(normalizePath(dirname(wd), winslash = "/"))
   }
   # Climb from sourced file when setwd is elsewhere
-  candidates <- c(file.path(dirname(wd), "fpa-local"))
+  candidates <- c(
+    file.path(dirname(wd), "opensourcefpa-engine"),
+    file.path(dirname(wd), "fpa-local")
+  )
   for (p in candidates) {
     if (dir.exists(p) && dir.exists(file.path(p, "R"))) {
       return(normalizePath(p, winslash = "/", mustWork = TRUE))
     }
   }
   stop(
-    "Impossible de trouver la racine fpa-local. ",
-    "Ouvrez le dossier fpa-local (celui qui contient R/ et config/) puis relancez."
+    "Impossible de trouver la racine opensourcefpa-engine. ",
+    "Ouvrez le dossier opensourcefpa-engine (celui qui contient R/ et config/) puis relancez."
   )
 }
 

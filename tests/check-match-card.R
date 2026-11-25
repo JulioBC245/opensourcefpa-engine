@@ -2,6 +2,7 @@
 # Copyright (C) 2026 Julio Bauer Cantuaria
 # The match card reads mechanisms and scenario_ranges from the configuration.
 root <- "."
+source(file.path(root, "tests", "helpers.R"), encoding = "UTF-8")
 source(file.path(root, "R/fpa-copy.R"), encoding = "UTF-8")
 source(file.path(root, "R/fpa-match.R"), encoding = "UTF-8")
 if (!requireNamespace("shiny", quietly = TRUE)) stop("shiny missing")
@@ -50,8 +51,8 @@ if (any(!ok)) {
   stop("hotel match card failed")
 }
 
-live_path <- "../fpa-local-test/fpa-config.json"
-if (file.exists(live_path) && requireNamespace("jsonlite", quietly = TRUE)) {
+live_path <- fpa_optional_data_config()
+if (!is.null(live_path) && requireNamespace("jsonlite", quietly = TRUE)) {
   live <- jsonlite::fromJSON(live_path, simplifyVector = FALSE)
   live_html <- paste(as.character(fpa_shiny_match_card(live)), collapse = "\n")
   inputs <- live$scenario_ranges$inputs
@@ -66,5 +67,7 @@ if (file.exists(live_path) && requireNamespace("jsonlite", quietly = TRUE)) {
   }
   cat(sprintf("live labels %s/%s\n", hit, n))
   if (n > 0L && hit != n) stop("live config labels missing from the card")
+} else {
+  fpa_notify_skip_optional_data("live match card")
 }
 cat("match card ok\n")

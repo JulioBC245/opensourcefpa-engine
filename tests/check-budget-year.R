@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (C) 2026 Julio Bauer Cantuaria
 # Budget year: open exercise, N-1 moves with N, local rewrite, post status.
-# Run from fpa-local: Rscript tests/check-budget-year.R
+# Run from the opensourcefpa-engine root: Rscript tests/check-budget-year.R
 
 source("tests/helpers.R", encoding = "UTF-8")
 fpa_test_bootstrap()
